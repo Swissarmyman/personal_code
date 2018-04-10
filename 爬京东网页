@@ -1,0 +1,9 @@
+import requests
+url = 'https://www.jd.com/?cu=true&utm_source=baidu-pinzhuan&utm_medium=cpc&utm_campaign=t_288551095_baidupinzhuan&utm_term=0f3d30c8dba7459bb52f2eb5eba8ac7d_0_1c0fded321bd47cf8762392681ff3e4e'
+try:
+    r = requests.get(url)
+    r.raise_for_status()  #检查请求是否成功
+    # r.encoding = r.apparent_encoding
+    print(r.text[:1000])
+except:
+    print('爬取失败')

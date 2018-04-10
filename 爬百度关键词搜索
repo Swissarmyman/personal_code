@@ -1,0 +1,26 @@
+import requests
+keywords = 'lol'
+# 百度的关键词接口：
+# https://www.baidu.com/s?wd=keyword
+# 360关键词接口
+# http://www.so.com/s?q=keyword
+# try:
+#     kv = {'wd': keywords}
+#     # params 向url中增加内容
+#     r = requests.get('http://www.baidu.com/s', params=kv)
+#     print(r.request.url)
+#     r.raise_for_status()
+#     print(r.text[:1000])
+#
+# except:
+#     print('爬取失败')
+
+try:
+    kv = {'wd' : keywords}
+    # Get将表单中数据的按照variable=value的形式，添加到action所指向的URL后面，并且两者使用“?”连接
+    r = requests.get('http://www.so.com/s', params=kv)
+    print(r.url)
+    r.raise_for_status()
+    print(r.text[:1000])
+except:
+    print('爬取失败')

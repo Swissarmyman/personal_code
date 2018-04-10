@@ -1,0 +1,98 @@
+import requests
+from bs4 import BeautifulSoup
+
+# 获取电影页面信息
+
+
+def getHtmlText(url):
+    '''
+    获取网页全部信息
+    
+    :param url: 网页链接
+    :return: 
+    '''
+    try:
+        r = requests.get(url)
+        r.encoding = r.apparent_encoding
+        r.raise_for_status()
+        return r.text
+    except:
+        print('获取网页信息失败')
+
+
+def getMoviePicture(html):
+    '''
+    从网页信息中获取电影的名字和海报，并下载存储
+    :param html: 传入的网页全部信息
+    :return: 
+    '''
+    soup = BeautifulSoup(html, 'html.parser')
+    for link in soup.find_all('img'):
+        if link.get('alt') and link.get('data-original') is not None:
+            name = link.get('alt')
+            picture = 'http://www.movie369.com' + link.get('data-original')
+            path_picture = root + name + '.png'
+            r = requests.get(picture)
+            with open(path_picture, 'wb') as f:
+                f.write(r.content)
+                print('文件保存成功')
+
+
+def movieInfotoList(list, html):
+    '''
+    获取网页信息中的电影名字和链接并存入一个List中
+    
+    :param list: 要存入的List
+    :param html: 要爬取信息的网页url
+    :return: 
+    '''
+    soup = BeautifulSoup(html, 'html.parser')
+    # print(soup.prettify())
+    for link in soup.find_all('a'):
+        if link.get('href') and link.get('title') is not None:
+            if link.get('title') != "点击登录":
+                # 获取标签内的内容
+                name = link.string
+                # 获取标签某一个属性的值
+                href = link.attrs['href']
+                list[name] = 'http://www.movie369.com' + href
+
+
+def saveList(list):
+    '''
+    将包含电影名字和链接的数据存入txt文件中
+    
+    :param list: 包含电影名字和链接的字典变量
+    :return: 
+    '''
+    file = open(txt_path, 'a')
+    for content in list:
+        file.write(content)
+        file.write(': ')
+        file.write(list[content])
+        file.write('\n')
+    file.close()
+
+
+if __name__ == '__main__':
+    start_url = 'http://www.movie369.com/index.php?s=/vod-show-id-爬美女图扩展.py-p-'
+    # 电影页面数
+    deep = 19
+    root = '/Users/changzhang/Desktop/爬虫/369电影网/爱情电影/'
+    txt_path = root + '电影资源链接.txt'
+    movie_list = {}
+    for i in range(deep):
+        if i == 0:
+            url = 'http://www.movie369.com/index.php?s=/vod-show-id-爬美女图扩展.py-p'
+        else:
+            url = start_url + str(i+1) + '.html'
+        text = getHtmlText(url)
+        movieInfotoList(movie_list, text)
+        saveList(movie_list)
+        getMoviePicture(text)
+        print('爬虫第%d页完毕' % i)
+    print('爬虫全部完毕')
+
+
+
+
