@@ -1,0 +1,20 @@
+import requests
+import os
+
+url = 'https://gss1.bdstatic.com/-vo3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=6561f325943df8dcb23087c3ac7819ee/9f510fb30f2442a7cc9d0077da43ad4bd0130254.jpg'
+root = '/Users/changzhang/Desktop/爬虫/新垣结衣/'
+
+# 获取图片的名字
+path = root + url.split('/')[-1]
+try:
+    if not os.path.exists(root):
+        os.mkdir(root)
+    if not os.path.exists(path):
+        r = requests.get(url)
+        with open(path, 'wb') as f:
+            f.write(r.content)
+            print('文件保存成功')
+    else:
+        print('文件已存在')
+except:
+    print('爬取失败')
